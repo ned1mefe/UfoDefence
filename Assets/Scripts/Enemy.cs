@@ -15,7 +15,18 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        if (health <= damage)
+        {
+            Die();
+            return;
+        }
         
+        health -= damage;
+    }
+
+    private void Die()
+    {
+        Destroy(gameObject);
     }
     
 }

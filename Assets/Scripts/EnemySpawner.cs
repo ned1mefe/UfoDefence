@@ -17,14 +17,14 @@ public class EnemySpawner : MonoBehaviour
 
         
         // only for testing
-        // var x = new LevelData
-        // {
-        //     Enemy1Count = 3,
-        //     Enemy2Count = 1,
-        //     Enemy3Count = 2
-        // };
-        //
-        // StartCoroutine(SpawnLevel(x));
+        var x = new LevelData
+        {
+            Enemy1Count = 3,
+            Enemy2Count = 1,
+            Enemy3Count = 2
+        };
+        
+        StartCoroutine(SpawnLevel(x));
     }
 
     public IEnumerator SpawnLevel(LevelData levelData)

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] private List<GameObject> EnemyPrefabs;
+    [SerializeField] private List<GameObject> enemyPrefabs;
     [SerializeField] private float delayBetweenSpawns;
     private Transform[] _spawners;
     
@@ -15,19 +15,16 @@ public class EnemySpawner : MonoBehaviour
             .Where(t => t != transform)
             .ToArray();
 
-        foreach (var spawner in _spawners)
-        {
-            Debug.Log(spawner.position);
-        }
         
-        var x = new LevelData
-        {
-            Enemy1Count = 3,
-            Enemy2Count = 1,
-            Enemy3Count = 2
-        };
-
-        StartCoroutine(SpawnLevel(x));
+        // only for testing
+        // var x = new LevelData
+        // {
+        //     Enemy1Count = 3,
+        //     Enemy2Count = 1,
+        //     Enemy3Count = 2
+        // };
+        //
+        // StartCoroutine(SpawnLevel(x));
     }
 
     public IEnumerator SpawnLevel(LevelData levelData)
@@ -45,7 +42,7 @@ public class EnemySpawner : MonoBehaviour
             yield return new WaitForSeconds(delayBetweenSpawns);
             
             var spawner = _spawners[Random.Range(0, _spawners.Length)];
-            var enemy = EnemyPrefabs[index];
+            var enemy = enemyPrefabs[index];
 
             Instantiate(enemy, spawner.position, Quaternion.identity);
         }

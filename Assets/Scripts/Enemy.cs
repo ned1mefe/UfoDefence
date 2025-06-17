@@ -12,5 +12,10 @@ public class Enemy : MonoBehaviour
         var rb = GetComponent<Rigidbody2D>();
         rb.velocity = Constants.EnemyWalkDirection * Constants.BlockSize * speed; 
     }
+
+    public void TakeDamage(int damage)
+    {
+        
+    }
     
 }

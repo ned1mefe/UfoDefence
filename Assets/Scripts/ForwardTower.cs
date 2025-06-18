@@ -7,6 +7,6 @@ public class ForwardTower : Tower
 
     protected override void Shoot()
     {
-        Instantiate(projectilePrefab, transform.position, _rotation);
+        Instantiate(attackPrefab, transform.position, _rotation);
     }
 }

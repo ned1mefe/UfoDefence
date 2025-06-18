@@ -4,7 +4,7 @@ using UnityEngine;
 public abstract class Tower : MonoBehaviour
 {
     [SerializeField] private float attackInterval;
-    [SerializeField] protected GameObject projectilePrefab;
+    [SerializeField] protected GameObject attackPrefab;
     private Coroutine _attackRoutine;
     protected static readonly float Angle = Mathf.Atan2(Constants.ShootDirection.y, Constants.ShootDirection.x) * Mathf.Rad2Deg - 90f;
 

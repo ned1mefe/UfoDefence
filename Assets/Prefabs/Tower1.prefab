@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackInterval: 3
-  projectilePrefab: {fileID: 1616352703592437277, guid: 0de8a64c7e16dc0448e399e0f2865b27, type: 3}
+  attackPrefab: {fileID: 1616352703592437277, guid: 0de8a64c7e16dc0448e399e0f2865b27, type: 3}
 --- !u!70 &6886521097721418722
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

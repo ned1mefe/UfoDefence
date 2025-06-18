@@ -8,10 +8,11 @@ public class TowerPlacer : MonoBehaviour
     [SerializeField] private GameObject[] towerPrefabs;
     private GameObject _selectedTower;
 
+    private int index = 0;
     private void Start()
     {
         //enabled = false;
-        _selectedTower = towerPrefabs[0];
+        _selectedTower = towerPrefabs[index];
     }
 
     void Update()
@@ -47,12 +48,16 @@ public class TowerPlacer : MonoBehaviour
             
             
         Vector3 placePos = placementTilemap.GetCellCenterWorld(cellPos);
+
+        placePos.y += _selectedTower.transform.position.y;
             
         placePos.y += 0.5f;  // aligning mistake with tiles
 
         if (!IsTowerOnTile(placePos))
         {
             Instantiate(_selectedTower, placePos, Quaternion.identity);
+            index = (index + 1) % 3;
+            _selectedTower = towerPrefabs[index];
         }
     }
 

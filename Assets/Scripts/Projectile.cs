@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Arrow : MonoBehaviour
+public class Projectile : MonoBehaviour
 { 
     [SerializeField] private float speed;
     [SerializeField] private int damage;

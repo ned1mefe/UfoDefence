@@ -17,7 +17,7 @@ public class EnemySpawner : MonoBehaviour
 
         
         // only for testing
-        var x = new LevelData
+        var x = new LevelEnemyData
         {
             Enemy1Count = 3,
             Enemy2Count = 1,
@@ -27,13 +27,13 @@ public class EnemySpawner : MonoBehaviour
         StartCoroutine(SpawnLevel(x));
     }
 
-    public IEnumerator SpawnLevel(LevelData levelData)
+    public IEnumerator SpawnLevel(LevelEnemyData levelEnemyData)
     {
         var spawnIndices = new List<int>();
 
-        for (var i = 0; i < levelData.Enemy1Count; i++) spawnIndices.Add(0);
-        for (var i = 0; i < levelData.Enemy2Count; i++) spawnIndices.Add(1);
-        for (var i = 0; i < levelData.Enemy3Count; i++) spawnIndices.Add(2);
+        for (var i = 0; i < levelEnemyData.Enemy1Count; i++) spawnIndices.Add(0);
+        for (var i = 0; i < levelEnemyData.Enemy2Count; i++) spawnIndices.Add(1);
+        for (var i = 0; i < levelEnemyData.Enemy3Count; i++) spawnIndices.Add(2);
 
         var shuffledIndices = spawnIndices.OrderBy(x => Random.value);
 

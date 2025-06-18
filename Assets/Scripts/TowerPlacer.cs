@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -6,35 +6,69 @@ public class TowerPlacer : MonoBehaviour
 {
     [SerializeField] private Tilemap placementTilemap; 
     [SerializeField] private GameObject[] towerPrefabs;
-    private GameObject _selectedTower;
+    [SerializeField] private UI ui;
+    [HideInInspector] public int availableTower1 = 0;
+    [HideInInspector] public int availableTower2 = 0;
+    [HideInInspector] public int availableTower3 = 0;
 
-    private int index = 0;
+    private List<GameObject> _placedTowers;
+    private int _selectedTowerIndex;
+    
+    
     private void Start()
     {
-        //enabled = false;
-        _selectedTower = towerPrefabs[index];
+        _placedTowers = new List<GameObject>();
+        enabled = false;
+        
+        var x = new LevelTowerData()
+        {
+            Tower1Count = 3,
+            Tower2Count = 1,
+            Tower3Count = 2
+        };
+        
+        SetTowerPlacer(x);
     }
 
-    void Update()
+    private void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            TryPlaceTower();
+            if (_selectedTowerIndex != -1)
+                TryPlaceTower();
+        }
+        if (Input.GetMouseButtonDown(1))
+        {
+            TryDeleteTower();
         }
     }
     
-    public void StartPlacing(GameObject tower)
+    public void StartPlacing(int towerIndex)
     {
-        _selectedTower = tower;
+        _selectedTowerIndex = towerIndex;
         enabled = true;
     }
 
     public void StopPlacing()
     {
-        _selectedTower = null;
+        _selectedTowerIndex = -1;
         enabled = false;
     }
 
+    public void SetTowerPlacer(LevelTowerData towerData)
+    {
+        availableTower1 = towerData.Tower1Count;
+        availableTower2 = towerData.Tower2Count;
+        availableTower3 = towerData.Tower3Count;
+        ui.UpdateTowerButtons();
+    }
+
+    public void ClearTowers()
+    {
+        _placedTowers.ForEach(Destroy);
+        _placedTowers.Clear();
+    }
+    
     private void TryPlaceTower()
     {
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -45,19 +79,22 @@ public class TowerPlacer : MonoBehaviour
         TileBase clickedTile = placementTilemap.GetTile(cellPos);
 
         if (clickedTile is null || clickedTile.name != "buildingPlaceGrass") return;
-            
-            
+        
         Vector3 placePos = placementTilemap.GetCellCenterWorld(cellPos);
-
-        placePos.y += _selectedTower.transform.position.y;
-            
+        var selectedTower = towerPrefabs[_selectedTowerIndex];
+        
+        placePos.y += selectedTower.transform.position.y;
         placePos.y += 0.5f;  // aligning mistake with tiles
 
         if (!IsTowerOnTile(placePos))
         {
-            Instantiate(_selectedTower, placePos, Quaternion.identity);
-            index = (index + 1) % 3;
-            _selectedTower = towerPrefabs[index];
+            var newTower = Instantiate(selectedTower, placePos, Quaternion.identity);
+            _placedTowers.Add(newTower);
+
+            if (!DecreaseAndCheck(_selectedTowerIndex))
+                _selectedTowerIndex = -1;
+            
+            ui.UpdateTowerButtons();
         }
     }
 
@@ -70,5 +107,66 @@ public class TowerPlacer : MonoBehaviour
                 return true;
         }
         return false;
+    }
+    private bool DecreaseAndCheck(int index) // returns selected one is still available
+    {
+        switch (index)
+        {
+            case 0:
+                availableTower1--;
+                return availableTower1 > 0;
+            case 1:
+                availableTower2--;
+                return availableTower2 > 0;
+            case 2:
+                availableTower3--;
+                return availableTower3 > 0;
+        }
+
+        return false;
+    }
+
+    private void TryDeleteTower()
+    {
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mouseWorldPos.z = 0f;
+        Collider2D[] hits = Physics2D.OverlapCircleAll(mouseWorldPos, 0.1f);
+        foreach (var hit in hits)
+        {
+            if (hit is not null && hit.CompareTag("Tower"))
+            {
+                GameObject towerToDelete = hit.gameObject;
+                int towerIndex = -1;
+                for (int i = 0; i < towerPrefabs.Length; i++)
+                {
+                    if (towerToDelete.name.Contains(towerPrefabs[i].name))
+                    {
+                        towerIndex = i;
+                        break;
+                    }
+                }
+
+                if (towerIndex != -1)
+                {
+                    switch (towerIndex)
+                    {
+                        case 0:
+                            availableTower1++;
+                            break;
+                        case 1:
+                            availableTower2++;
+                            break;
+                        case 2:
+                            availableTower3++;
+                            break;
+                    }
+
+                    ui.UpdateTowerButtons();
+                }
+
+                _placedTowers.Remove(towerToDelete);
+                Destroy(towerToDelete);
+            }
+        }
     }
 }

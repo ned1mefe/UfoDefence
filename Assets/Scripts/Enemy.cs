@@ -26,7 +26,19 @@ public class Enemy : MonoBehaviour
 
     private void Die()
     {
-        Destroy(gameObject);
+        gameObject.SetActive(false);
+        GameManager.Instance.CheckWinLevel();
     }
-    
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Tower"))
+        {
+            other.gameObject.SetActive(false);
+        }
+        else if (other.CompareTag("Finish"))
+        {
+            GameManager.Instance.LoseLevel();
+        }
+    }
 }

@@ -11,9 +11,19 @@ public abstract class Tower : MonoBehaviour
 
     protected abstract void Shoot();
 
-    protected virtual void Start()
+    public void Activate()
     {
+        if (_attackRoutine is not null) return;
+        
         _attackRoutine = StartCoroutine(AttackLoop());
+    }
+    
+    public void Deactivate()
+    {
+        if (_attackRoutine == null) return;
+        
+        StopCoroutine(_attackRoutine);
+        _attackRoutine = null;
     }
 
     private IEnumerator AttackLoop()

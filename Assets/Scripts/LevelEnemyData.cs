@@ -1,4 +1,6 @@
-﻿public struct LevelEnemyData
+﻿using System;
+
+[Serializable] public struct LevelEnemyData
 {
     public int Enemy1Count;
     public int Enemy2Count;

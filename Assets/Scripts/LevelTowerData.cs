@@ -1,4 +1,6 @@
-﻿public struct LevelTowerData
+﻿using System;
+
+[Serializable] public struct LevelTowerData
 {
     public int Tower1Count;
     public int Tower2Count;

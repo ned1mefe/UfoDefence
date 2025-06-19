@@ -11,23 +11,14 @@ public class TowerPlacer : MonoBehaviour
     [HideInInspector] public int availableTower2 = 0;
     [HideInInspector] public int availableTower3 = 0;
 
-    private List<GameObject> _placedTowers;
+    private List<Tower> _placedTowers;
     private int _selectedTowerIndex;
     
     
-    private void Start()
+    private void Awake()
     {
-        _placedTowers = new List<GameObject>();
+        _placedTowers = new List<Tower>();
         enabled = false;
-        
-        var x = new LevelTowerData()
-        {
-            Tower1Count = 3,
-            Tower2Count = 1,
-            Tower3Count = 2
-        };
-        
-        SetTowerPlacer(x);
     }
 
     private void Update()
@@ -42,6 +33,13 @@ public class TowerPlacer : MonoBehaviour
             TryDeleteTower();
         }
     }
+    public void SetTowerPlacer(LevelTowerData towerData)
+    {
+        availableTower1 = towerData.Tower1Count;
+        availableTower2 = towerData.Tower2Count;
+        availableTower3 = towerData.Tower3Count;
+        ui.UpdateTowerButtons();
+    }
     
     public void StartPlacing(int towerIndex)
     {
@@ -54,20 +52,16 @@ public class TowerPlacer : MonoBehaviour
         _selectedTowerIndex = -1;
         enabled = false;
     }
-
-    public void SetTowerPlacer(LevelTowerData towerData)
-    {
-        availableTower1 = towerData.Tower1Count;
-        availableTower2 = towerData.Tower2Count;
-        availableTower3 = towerData.Tower3Count;
-        ui.UpdateTowerButtons();
-    }
-
+    
     public void ClearTowers()
     {
-        _placedTowers.ForEach(Destroy);
+        _placedTowers.ForEach(x => Destroy(x.gameObject));
         _placedTowers.Clear();
     }
+
+    public void ActivateTowers() => _placedTowers.ForEach(x => x.Activate());
+    public void DeactivateTowers() => _placedTowers.ForEach(x => x.Deactivate());
+    
     
     private void TryPlaceTower()
     {
@@ -89,7 +83,7 @@ public class TowerPlacer : MonoBehaviour
         if (!IsTowerOnTile(placePos))
         {
             var newTower = Instantiate(selectedTower, placePos, Quaternion.identity);
-            _placedTowers.Add(newTower);
+            _placedTowers.Add(newTower.GetComponent<Tower>());
 
             if (!DecreaseAndCheck(_selectedTowerIndex))
                 _selectedTowerIndex = -1;
@@ -164,7 +158,7 @@ public class TowerPlacer : MonoBehaviour
                     ui.UpdateTowerButtons();
                 }
 
-                _placedTowers.Remove(towerToDelete);
+                _placedTowers.Remove(towerToDelete.GetComponent<Tower>());
                 Destroy(towerToDelete);
             }
         }
